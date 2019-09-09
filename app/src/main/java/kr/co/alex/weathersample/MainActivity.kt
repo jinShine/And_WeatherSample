@@ -7,14 +7,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kr.co.alex.weathersample.adapter.WeatherAdapter
 import kr.co.alex.weathersample.data.WeatherData
 import kr.co.alex.weathersample.data.WeatherRecyclerType
+import kr.co.alex.weathersample.data.WeatherRegionData
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private const val SPAN_COUNT = 2
-    }
-
-    private val adapter = WeatherAdapter()
+    private var adapter: WeatherAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +22,24 @@ class MainActivity : AppCompatActivity() {
 
         val sampleItems = listOf(
             WeatherRecyclerType.Header,
+            WeatherRecyclerType.Region(WeatherRegionData(("서울\n경기"))),
+            WeatherRecyclerType.Item(
+                WeatherData(
+                    R.mipmap.ic_launcher,
+                    "비가오네요",
+                    25,
+                    80
+                )
+            ),
+            WeatherRecyclerType.Item(
+                WeatherData(
+                    R.mipmap.ic_launcher,
+                    "비가오네요2",
+                    30,
+                    100
+                )
+            ),
+            WeatherRecyclerType.Region(WeatherRegionData(("서해\n5도"))),
             WeatherRecyclerType.Item(
                 WeatherData(
                     R.mipmap.ic_launcher,
@@ -43,25 +58,14 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        adapter.updateAllItems(sampleItems)
+        adapter?.updateAllItems(sampleItems)
     }
 
     fun setupAdaptor() {
 
-        recyclerView.layoutManager = GridLayoutManager(this, SPAN_COUNT).apply {
-
-            this.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-
-                override fun getSpanSize(position: Int): Int {
-                    return when (adapter.getItemViewType(position)) {
-                        WeatherAdapter.VIEW_TYPE_HEADER -> 2
-                        WeatherAdapter.VIEW_TYPE_ITEM -> 1
-                        else -> throw RuntimeException("")
-                    }
-                }
-            }
-        }
-
+        val layoutManager = GridLayoutManager(this, WeatherAdapter.FULL_SPAN_SIZE)
+        adapter = WeatherAdapter(layoutManager)
+        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }
 }
