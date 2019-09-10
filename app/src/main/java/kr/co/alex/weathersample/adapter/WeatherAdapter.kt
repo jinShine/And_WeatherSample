@@ -8,12 +8,13 @@ import kr.co.alex.weathersample.R
 import kr.co.alex.weathersample.data.WeatherRecyclerType
 
 
-class WeatherAdapter(layoutManager: GridLayoutManager) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WeatherAdapter(layoutManager: GridLayoutManager) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        const val FULL_SPAN_SIZE = 10
-        const val WEATHER_ITEM_SPAN_SIZE = 4
-        const val WEATHER_REGION_SPAN_SIZE = 2
+        const val FULL_SPAN_SIZE = 11
+        const val WEATHER_ITEM_SPAN_SIZE = 5
+        const val WEATHER_REGION_SPAN_SIZE = 1
 
         const val VIEW_TYPE_HEADER = R.layout.viewholder_weather_header
         const val VIEW_TYPE_ITEM = R.layout.viewholder_weather
@@ -67,10 +68,6 @@ class WeatherAdapter(layoutManager: GridLayoutManager) : RecyclerView.Adapter<Re
 
         notifyDataSetChanged()
     }
-
-
-
-
 
 
 }

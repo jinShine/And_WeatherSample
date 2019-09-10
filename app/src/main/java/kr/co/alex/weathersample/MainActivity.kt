@@ -1,6 +1,7 @@
 package kr.co.alex.weathersample
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -8,6 +9,12 @@ import kr.co.alex.weathersample.adapter.WeatherAdapter
 import kr.co.alex.weathersample.data.WeatherData
 import kr.co.alex.weathersample.data.WeatherRecyclerType
 import kr.co.alex.weathersample.data.WeatherRegionData
+import kr.co.alex.weathersample.api.WeatherAPI
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,7 +65,22 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
+        val toast = Toast.makeText(applicationContext, "안녕하세요", Toast.LENGTH_LONG)
+        toast.show()
+
+
         adapter?.updateAllItems(sampleItems)
+
+        WeatherAPI.weatherService.getPage().enqueue(object: Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                println(" :" + t.toString())
+            }
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                println(" :" + response.code())
+            }
+        })
+
     }
 
     fun setupAdaptor() {
@@ -69,3 +91,4 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
     }
 }
+

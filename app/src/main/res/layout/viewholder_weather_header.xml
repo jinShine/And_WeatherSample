@@ -12,7 +12,7 @@
         android:text="지역"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/morningTextView"
-        app:layout_constraintHorizontal_weight="0.2"
+        app:layout_constraintHorizontal_weight="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,7 +24,7 @@
         android:text="오전"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/afternoonTextView"
-        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintHorizontal_weight="0.45"
         app:layout_constraintStart_toEndOf="@id/regionTitleTextView"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +36,7 @@
         android:text="오후"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintHorizontal_weight="0.45"
         app:layout_constraintStart_toEndOf="@id/morningTextView"
         app:layout_constraintTop_toTopOf="parent" />
 
