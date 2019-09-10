@@ -7,7 +7,7 @@ kotlin에서는 if문 없는 프로그래밍을 추구하는 함수형 프로그
 
 ![](https://miro.medium.com/max/761/1*pLNnrvgvmG6Mdi0Yw3mdPQ.png)
 
-대표적으로 let, apply, run, also
+대표적으로 !let, !apply, !run, !also
 
 #### let
 좌측의 함수나 객체의 결과값을 넘겨받는다.
