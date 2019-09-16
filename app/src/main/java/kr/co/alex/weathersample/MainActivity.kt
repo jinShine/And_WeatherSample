@@ -65,10 +65,6 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        val toast = Toast.makeText(applicationContext, "안녕하세요", Toast.LENGTH_LONG)
-        toast.show()
-
-
         adapter?.updateAllItems(sampleItems)
 
         WeatherAPI.weatherService.getPage().enqueue(object: Callback<ResponseBody> {
