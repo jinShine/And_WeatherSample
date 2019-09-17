@@ -32,6 +32,7 @@ class NaverWeatherParser {
         document = Jsoup.parse(file, "utf-8")
     }
 
+    //에러
     fun getWeatherRows() = document.select(QUERY_ROWS)
 
     fun getNowDateHeader() = document.select(QUERY_HEADER)
@@ -67,7 +68,19 @@ class NaverWeatherParser {
         )
     }
 
+    private fun test() {
+
+    }
+
+    fun test1(a: Int) {
+
+    }
+
     fun getData(): List<RegionWeather> {
+        val test = listOf(1, 2, 3, 4, 5)
+        test.map(::test1)
+
+
         return getWeatherRows()
             .map {
                 val regionName = getRegion(it)
