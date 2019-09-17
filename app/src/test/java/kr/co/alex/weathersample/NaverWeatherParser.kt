@@ -2,10 +2,25 @@ package kr.co.alex.weathersample
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
+import org.jsoup.nodes.Element
 import java.io.File
 
 class NaverWeatherParser {
+
+    companion object {
+        const val QUERY_ROWS = "#container #content table tbody tr"
+        const val QUERY_ROWS_TH_A = "th a"
+        const val QUERY_ROWS_TD = "td"
+        const val QUERY_ROWS_P_IMG = "p img"
+        const val QUERY_ROWS_UL_UI = "ul li"
+        const val QUERY_ROWS_SRC = "src"
+        const val QUERY_ROWS_TEMP = ".temp"
+        const val QUERY_ROWS_RAIN = ".rain"
+
+        const val QUERY_HEADER = "#header .lnb"
+        const val QUERY_HEADER_DATE = ".lnb_date"
+        const val QUERY_HEADER_BLIND = ".blind"
+    }
 
     val document: Document
 
@@ -17,37 +32,60 @@ class NaverWeatherParser {
         document = Jsoup.parse(file, "utf-8")
     }
 
+    fun getWeatherRows() = document.select(QUERY_ROWS)
+
+    fun getNowDateHeader() = document.select(QUERY_HEADER)
+
+    fun getNoWDate(): String {
+        return getNowDateHeader()
+            .let {
+                val dateQuery = it.select(QUERY_HEADER_DATE)
+                dateQuery.forEach { it.select(QUERY_HEADER_BLIND).remove() }
+                dateQuery.text()
+            }
+    }
+
+    fun getRegion(el: Element) = el.select(QUERY_ROWS_TH_A).text()
+
+    fun getMorningWeather(el: Element) = getWeather(el, true)
+
+    fun getAfternoonWeather(el: Element) = getWeather(el, false)
+
+    private fun getWeather(el: Element, isMorning: Boolean): Weather {
+        val index = if (isMorning) 0 else 1
+        val baseQuery = el.select(QUERY_ROWS_TD)[index]
+
+        return Weather(
+            iconUrl = baseQuery.select(QUERY_ROWS_P_IMG).attr(QUERY_ROWS_SRC),
+            status = baseQuery.select(QUERY_ROWS_UL_UI).first().text(),
+            temperature = baseQuery.select(QUERY_ROWS_UL_UI).last().select(
+                QUERY_ROWS_TEMP
+            ).text(),
+            chanceOfRain = baseQuery.select(QUERY_ROWS_UL_UI).last().select(
+                QUERY_ROWS_RAIN
+            ).text()
+        )
+    }
+
     fun getData(): List<RegionWeather> {
         return getWeatherRows()
             .map {
-                val regionName = it.select("th a").text()
-                val morningWeather = Weather(
-                    iconUrl = it.select("td").first().select("p img").attr("src"),
-                    status = it.select("td").first().select("ul li").first().text(),
-                    temperature = it.select("td").first().select("ul li").last().select(".temp").text(),
-                    chanceOfRain = it.select("td").first().select("ul li").last().select(".rain").text()
-                )
+                val regionName = getRegion(it)
+                val morningWeather = getMorningWeather(it)
+                val afternoonWeather = getAfternoonWeather(it)
 
-                val afternoonWeather = Weather(
-                    iconUrl = it.select("td").last().select("p img").attr("src"),
-                    status = it.select("td").last().select("ul li").first().text(),
-                    temperature = it.select("td").last().select("ul li").last().select(".temp").text(),
-                    chanceOfRain = it.select("td").last().select("ul li").last().select(".rain").text()
-                )
+                return@map Triple(regionName, morningWeather, afternoonWeather)
+            }.map {
+                var (region, morning, afternoon) = it
 
                 RegionWeather(
-                    regionName = regionName,
-                    morningWeather = morningWeather,
-                    afternoonWeather = afternoonWeather
+                    regionName = region,
+                    morningWeather = morning,
+                    afternoonWeather = afternoon
                 )
             }
     }
 
-
-    fun getWeatherRows(): Elements {
-        //id는 #을 붙혀야됨
-        return document.select("#container #content table tbody tr")
-    }
 
 }
 
@@ -57,7 +95,7 @@ data class RegionWeather(
     val afternoonWeather: Weather
 )
 
-data class Weather (
+data class Weather(
     val iconUrl: String,
     val status: String,
     val temperature: String,
