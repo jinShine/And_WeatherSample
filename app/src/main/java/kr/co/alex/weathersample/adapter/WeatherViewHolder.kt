@@ -16,16 +16,16 @@ class WeatherViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         with(item.data) {
             // Weather Icon
-            itemView.weatherIcon.setImageResource(iconUrl)
+//            itemView.weatherIcon.setImageResource(iconUrl)
 
             // Weather Desc
-            itemView.weatherDesc.text = desc
+            itemView.weatherDesc.text = status
 
             // Weather Temperature
-            itemView.weatherTemp.text = itemView.context.getString(R.string.temp_format, temp)
+            itemView.weatherTemp.text = itemView.context.getString(R.string.temp_format, temperature)
 
             // Weather Percent
-            itemView.weatherPercent.text = "강수확률:$percent%"
+            itemView.weatherPercent.text = "강수확률:$chanceOfRain%"
         }
 
     }

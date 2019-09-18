@@ -33,20 +33,17 @@ class NaverWeatherParser {
         const val QUERY_HEADER_BLIND = ".blind"
     }
 
-    lateinit var document: Document
-
-    constructor() {
-        thread {
-            document = Jsoup.connect(BASE_URL).get()
-        }
-
-    }
+    var document: Document
 
     constructor(file: File) {
         document = Jsoup.parse(
             file,
             CHARSET_NAME
         )
+    }
+
+    constructor(te: String) {
+        document = Jsoup.parse(te)
     }
 
 

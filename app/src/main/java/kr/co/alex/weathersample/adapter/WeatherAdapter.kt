@@ -66,6 +66,7 @@ class WeatherAdapter(layoutManager: GridLayoutManager) :
         this.items.clear()
         this.items.addAll(items)
 
+        print("HEHEHEHEHEHEHHE" + items)
         notifyDataSetChanged()
     }
 
