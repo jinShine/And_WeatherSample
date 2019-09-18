@@ -46,31 +46,7 @@ class NaverWeatherParserTest {
 	fun tesGetRegion() {
 		val parser = getNaverWeatherParserFromFile()
 		val data = parser.getWeatherRows()
-			.map {
-				parser.getRegion(it)
-			}
-
-		assertEquals(true, data.isNotEmpty())
-	}
-
-	@Test
-	fun testGetMorningWeather() {
-		val parser = getNaverWeatherParserFromFile()
-		val data = parser.getWeatherRows()
-			.map {
-				parser.getMorningWeather(it)
-			}
-
-		assertEquals(true, data.isNotEmpty())
-	}
-
-	@Test
-	fun testGetAfternoonWeather() {
-		val parser = getNaverWeatherParserFromFile()
-		val data = parser.getWeatherRows()
-			.map {
-				parser.getAfternoonWeather(it)
-			}
+			.map { parser.getRegion(it) }
 
 		assertEquals(true, data.isNotEmpty())
 	}
@@ -87,9 +63,6 @@ class NaverWeatherParserTest {
 	fun testGetNowDate() {
 		val parser = NaverWeatherParser()
 		val date = parser.getNoWDate()
-
-		print(date)
-		print(nowDate())
 
 		assertEquals(date, nowDate())
 	}

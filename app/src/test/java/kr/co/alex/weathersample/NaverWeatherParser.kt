@@ -3,11 +3,16 @@ package kr.co.alex.weathersample
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import java.io.File
 
 class NaverWeatherParser {
 
     companion object {
+        const val BASE_URL = "https://weather.naver.com/rgn/cityWetrMain.nhn"
+
+        const val CHARSET_NAME = "utf-8"
+
         const val QUERY_ROWS = "#container #content table tbody tr"
         const val QUERY_ROWS_TH_A = "th a"
         const val QUERY_ROWS_TD = "td"
@@ -25,79 +30,68 @@ class NaverWeatherParser {
     val document: Document
 
     constructor() {
-        document = Jsoup.connect("https://weather.naver.com/rgn/cityWetrMain.nhn").get()
+        document = Jsoup.connect(BASE_URL).get()
     }
 
     constructor(file: File) {
-        document = Jsoup.parse(file, "utf-8")
+        document = Jsoup.parse(file, CHARSET_NAME)
     }
 
-    //에러
-    fun getWeatherRows() = document.select(QUERY_ROWS)
 
-    fun getNowDateHeader() = document.select(QUERY_HEADER)
+    private fun getNowDateHeader(): Elements =
+        document.select(QUERY_HEADER)
+
+    fun getWeatherRows(): Elements =
+        document.select(QUERY_ROWS)
 
     fun getNoWDate(): String {
         return getNowDateHeader()
-            .let {
-                val dateQuery = it.select(QUERY_HEADER_DATE)
+            .let { el ->
+                val dateQuery = el.select(QUERY_HEADER_DATE)
                 dateQuery.forEach { it.select(QUERY_HEADER_BLIND).remove() }
                 dateQuery.text()
             }
     }
 
-    fun getRegion(el: Element) = el.select(QUERY_ROWS_TH_A).text()
+    fun getRegion(el: Element): String =
+        el.select(QUERY_ROWS_TH_A).text()
 
-    fun getMorningWeather(el: Element) = getWeather(el, true)
+//    private fun getWeather(
+//        el: Element,
+//        isMorning: Elements.() -> Element
+//    ): Weather {
+//        return el.select(QUERY_ROWS_TD).isMorning().let { weatherParser(it) }
+//    }
 
-    fun getAfternoonWeather(el: Element) = getWeather(el, false)
+    private fun getWeather(
+        el: Element,
+        isMorning: Boolean
+    ): Weather {
+        return if ( isMorning ) {
+            el.select(QUERY_ROWS_TD).first().let { weatherParser(it) }
+        } else {
+            el.select(QUERY_ROWS_TD).last().let { weatherParser(it) }
+        }
 
-    private fun getWeather(el: Element, isMorning: Boolean): Weather {
-        val index = if (isMorning) 0 else 1
-        val baseQuery = el.select(QUERY_ROWS_TD)[index]
+    }
 
-        return Weather(
-            iconUrl = baseQuery.select(QUERY_ROWS_P_IMG).attr(QUERY_ROWS_SRC),
-            status = baseQuery.select(QUERY_ROWS_UL_UI).first().text(),
-            temperature = baseQuery.select(QUERY_ROWS_UL_UI).last().select(
-                QUERY_ROWS_TEMP
-            ).text(),
-            chanceOfRain = baseQuery.select(QUERY_ROWS_UL_UI).last().select(
-                QUERY_ROWS_RAIN
-            ).text()
+    fun getData() =
+        getWeatherRows().map {
+            RegionWeather(
+                regionName = getRegion(it),
+                morningWeather = getWeather(it, isMorning = true),
+                afternoonWeather = getWeather(it, isMorning = false)
+            )
+        }
+
+
+    private fun weatherParser(el: Element) =
+        Weather(
+            iconUrl = el.select(QUERY_ROWS_P_IMG).attr(QUERY_ROWS_SRC),
+            status = el.select(QUERY_ROWS_UL_UI).first().text(),
+            temperature = el.select(QUERY_ROWS_UL_UI).last().select(QUERY_ROWS_TEMP).text(),
+            chanceOfRain = el.select(QUERY_ROWS_UL_UI).last().select(QUERY_ROWS_RAIN).text()
         )
-    }
-
-    private fun test() {
-
-    }
-
-    fun test1(a: Int) {
-
-    }
-
-    fun getData(): List<RegionWeather> {
-        val test = listOf(1, 2, 3, 4, 5)
-        test.map(::test1)
-
-
-        return getWeatherRows()
-            .map {
-                val regionName = getRegion(it)
-                val morningWeather = getMorningWeather(it)
-                val afternoonWeather = getAfternoonWeather(it)
-
-                return@map Triple(regionName, morningWeather, afternoonWeather)
-            }.map {
-                var (region, morning, afternoon) = it
-
-                RegionWeather(
-                    regionName = region,
-                    morningWeather = morning,
-                    afternoonWeather = afternoon
-                )
-            }
-    }
 
 
 }
