@@ -3,8 +3,12 @@ package kr.co.alex.weathersample
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
+import kr.co.alex.weathersample.Parser.NaverWeatherParser
 import kr.co.alex.weathersample.adapter.WeatherAdapter
 import kr.co.alex.weathersample.data.WeatherData
 import kr.co.alex.weathersample.data.WeatherRecyclerType
@@ -26,46 +30,20 @@ class MainActivity : AppCompatActivity() {
 
         setupAdaptor()
 
+        val viewModel = ViewModelProviders.of(
+            this,
+            object: ViewModelProvider.Factory {
+                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                    return WeatherViewModel(NaverWeatherParser()) as T
+                }
+            }
+        ).get(WeatherViewModel::class.java)
 
-        val sampleItems = listOf(
-            WeatherRecyclerType.Header,
-            WeatherRecyclerType.Region(WeatherRegionData(("서울\n경기"))),
-            WeatherRecyclerType.Item(
-                WeatherData(
-                    R.mipmap.ic_launcher,
-                    "비가오네요",
-                    25,
-                    80
-                )
-            ),
-            WeatherRecyclerType.Item(
-                WeatherData(
-                    R.mipmap.ic_launcher,
-                    "비가오네요2",
-                    30,
-                    100
-                )
-            ),
-            WeatherRecyclerType.Region(WeatherRegionData(("서해\n5도"))),
-            WeatherRecyclerType.Item(
-                WeatherData(
-                    R.mipmap.ic_launcher,
-                    "비가오네요",
-                    25,
-                    80
-                )
-            ),
-            WeatherRecyclerType.Item(
-                WeatherData(
-                    R.mipmap.ic_launcher,
-                    "비가오네요2",
-                    30,
-                    100
-                )
-            )
-        )
 
-        adapter?.updateAllItems(sampleItems)
+        viewModel.test()
+
+
+//        adapter?.updateAllItems(sampleItems)
 
         WeatherAPI.weatherService.getPage().enqueue(object: Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

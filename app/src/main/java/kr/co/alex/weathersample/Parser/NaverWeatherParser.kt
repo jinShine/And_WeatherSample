@@ -1,12 +1,18 @@
-package kr.co.alex.weathersample
+package kr.co.alex.weathersample.Parser
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.File
+import kotlin.concurrent.thread
 
 class NaverWeatherParser {
+
+    enum class Meridiem(val status: Boolean) {
+        AM(true),
+        PM(false)
+    }
 
     companion object {
         const val BASE_URL = "https://weather.naver.com/rgn/cityWetrMain.nhn"
@@ -27,14 +33,20 @@ class NaverWeatherParser {
         const val QUERY_HEADER_BLIND = ".blind"
     }
 
-    val document: Document
+    lateinit var document: Document
 
     constructor() {
-        document = Jsoup.connect(BASE_URL).get()
+        thread {
+            document = Jsoup.connect(BASE_URL).get()
+        }
+
     }
 
     constructor(file: File) {
-        document = Jsoup.parse(file, CHARSET_NAME)
+        document = Jsoup.parse(
+            file,
+            CHARSET_NAME
+        )
     }
 
 
@@ -56,21 +68,14 @@ class NaverWeatherParser {
     fun getRegion(el: Element): String =
         el.select(QUERY_ROWS_TH_A).text()
 
-//    private fun getWeather(
-//        el: Element,
-//        isMorning: Elements.() -> Element
-//    ): Weather {
-//        return el.select(QUERY_ROWS_TD).isMorning().let { weatherParser(it) }
-//    }
-
     private fun getWeather(
         el: Element,
-        isMorning: Boolean
+        meridiem: Meridiem
     ): Weather {
-        return if ( isMorning ) {
-            el.select(QUERY_ROWS_TD).first().let { weatherParser(it) }
+        return if (meridiem.status) {
+            el.select(QUERY_ROWS_TD).first().let(::weatherParser)
         } else {
-            el.select(QUERY_ROWS_TD).last().let { weatherParser(it) }
+            el.select(QUERY_ROWS_TD).last().let(::weatherParser)
         }
 
     }
@@ -79,18 +84,23 @@ class NaverWeatherParser {
         getWeatherRows().map {
             RegionWeather(
                 regionName = getRegion(it),
-                morningWeather = getWeather(it, isMorning = true),
-                afternoonWeather = getWeather(it, isMorning = false)
+                morningWeather = getWeather(it, Meridiem.AM),
+                afternoonWeather = getWeather(it, Meridiem.PM)
             )
         }
 
-
     private fun weatherParser(el: Element) =
         Weather(
-            iconUrl = el.select(QUERY_ROWS_P_IMG).attr(QUERY_ROWS_SRC),
+            iconUrl = el.select(QUERY_ROWS_P_IMG).attr(
+                QUERY_ROWS_SRC
+            ),
             status = el.select(QUERY_ROWS_UL_UI).first().text(),
-            temperature = el.select(QUERY_ROWS_UL_UI).last().select(QUERY_ROWS_TEMP).text(),
-            chanceOfRain = el.select(QUERY_ROWS_UL_UI).last().select(QUERY_ROWS_RAIN).text()
+            temperature = el.select(QUERY_ROWS_UL_UI).last().select(
+                QUERY_ROWS_TEMP
+            ).text(),
+            chanceOfRain = el.select(QUERY_ROWS_UL_UI).last().select(
+                QUERY_ROWS_RAIN
+            ).text()
         )
 
 
