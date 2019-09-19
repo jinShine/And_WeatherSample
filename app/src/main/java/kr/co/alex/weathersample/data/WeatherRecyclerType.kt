@@ -1,6 +1,5 @@
 package kr.co.alex.weathersample.data
 
-import kr.co.alex.weathersample.Parser.Weather
 import kr.co.alex.weathersample.adapter.WeatherAdapter.Companion
 
 

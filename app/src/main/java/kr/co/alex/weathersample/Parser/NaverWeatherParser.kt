@@ -1,11 +1,12 @@
 package kr.co.alex.weathersample.Parser
 
+import kr.co.alex.weathersample.data.NationalRegion
+import kr.co.alex.weathersample.data.Weather
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.File
-import kotlin.concurrent.thread
 
 class NaverWeatherParser {
 
@@ -15,8 +16,6 @@ class NaverWeatherParser {
     }
 
     companion object {
-        const val BASE_URL = "https://weather.naver.com/rgn/cityWetrMain.nhn"
-
         const val CHARSET_NAME = "utf-8"
 
         const val QUERY_ROWS = "#container #content table tbody tr"
@@ -42,8 +41,8 @@ class NaverWeatherParser {
         )
     }
 
-    constructor(te: String) {
-        document = Jsoup.parse(te)
+    constructor(response: String) {
+        document = Jsoup.parse(response)
     }
 
 
@@ -79,7 +78,7 @@ class NaverWeatherParser {
 
     fun getData() =
         getWeatherRows().map {
-            RegionWeather(
+            NationalRegion(
                 regionName = getRegion(it),
                 morningWeather = getWeather(it, Meridiem.AM),
                 afternoonWeather = getWeather(it, Meridiem.PM)
@@ -100,18 +99,4 @@ class NaverWeatherParser {
             ).text()
         )
 
-
 }
-
-data class RegionWeather(
-    val regionName: String,
-    val morningWeather: Weather,
-    val afternoonWeather: Weather
-)
-
-data class Weather(
-    val iconUrl: String,
-    val status: String,
-    val temperature: String,
-    val chanceOfRain: String
-)
