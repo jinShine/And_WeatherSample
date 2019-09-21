@@ -38,5 +38,3 @@ println(changedUser)
 //User(id=2, name=오오오)
     
 ```
-
-#### run
