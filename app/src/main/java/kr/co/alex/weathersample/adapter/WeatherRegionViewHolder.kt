@@ -13,7 +13,7 @@ class WeatherRegionViewHolder(view: View): RecyclerView.ViewHolder(view) {
             return
         }
 
-        itemView.region.text = item.data
+        itemView.region.text = item.data.replace(" ", "\n")
 
     }
 }

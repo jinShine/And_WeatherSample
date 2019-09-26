@@ -29,7 +29,7 @@ class WeatherViewModel : ViewModel() {
         })
     }
 
-    private fun transform(items: List<NationalRegion>) : List<WeatherRecyclerType> {
+    private fun transform(items: List<NationalRegion>): List<WeatherRecyclerType> {
         var list = mutableListOf<WeatherRecyclerType>()
 
         items.map {

@@ -15,6 +15,7 @@ class WeatherViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
 
         with(item.data) {
+
             // Weather Icon
             Glide.with(itemView).load(iconUrl).into(itemView.weatherIcon)
 
