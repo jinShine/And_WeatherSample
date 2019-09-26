@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProviders.of(
             this,
+
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     return WeatherViewModel() as T

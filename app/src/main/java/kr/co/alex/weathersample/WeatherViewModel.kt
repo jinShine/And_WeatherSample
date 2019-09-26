@@ -1,10 +1,10 @@
 package kr.co.alex.weathersample
 
 import androidx.lifecycle.ViewModel
-import kr.co.alex.weathersample.Parser.NaverWeatherParser
 import kr.co.alex.weathersample.api.WeatherAPI
 import kr.co.alex.weathersample.data.NationalRegion
 import kr.co.alex.weathersample.data.WeatherRecyclerType
+import kr.co.alex.weathersample.parser.NaverWeatherParser
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,7 +32,7 @@ class WeatherViewModel : ViewModel() {
     private fun transform(items: List<NationalRegion>): List<WeatherRecyclerType> {
         var list = mutableListOf<WeatherRecyclerType>()
 
-        items.map {
+        items.forEach {
             list.add(WeatherRecyclerType.Region(it.regionName))
             list.add(WeatherRecyclerType.Item(it.morningWeather))
             list.add(WeatherRecyclerType.Item(it.afternoonWeather))

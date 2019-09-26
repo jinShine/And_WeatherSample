@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dimen_test">10dp</dimen>
+
+    <dimen name="weather_info_text_size">11sp</dimen> <!-- 텍스트는 sp를 사용한다.-->
 </resources>

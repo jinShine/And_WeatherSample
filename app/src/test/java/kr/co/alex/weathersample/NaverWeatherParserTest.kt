@@ -1,6 +1,6 @@
 package kr.co.alex.weathersample
 
-import kr.co.alex.weathersample.Parser.NaverWeatherParser
+import kr.co.alex.weathersample.parser.NaverWeatherParser
 import org.jsoup.nodes.Document
 import org.junit.Test
 import org.junit.Assert.*

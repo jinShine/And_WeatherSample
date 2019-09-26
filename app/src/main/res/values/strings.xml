@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">WeatherSample</string>
-    <string name="test">adlfjalkdfjlaksdjfkasdjflasdjfljdf</string>
-    <string name="temp_format">기온%1$d℃</string>
+    <string name="temp_format">기온 %s</string>
+    <string name="main_format">강수확률 %s</string>
 </resources>

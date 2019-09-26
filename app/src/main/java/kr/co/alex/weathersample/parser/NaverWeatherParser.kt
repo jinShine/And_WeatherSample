@@ -1,4 +1,4 @@
-package kr.co.alex.weathersample.Parser
+package kr.co.alex.weathersample.parser
 
 import kr.co.alex.weathersample.data.NationalRegion
 import kr.co.alex.weathersample.data.Weather
@@ -10,9 +10,9 @@ import java.io.File
 
 class NaverWeatherParser {
 
-    enum class Meridiem(val status: Boolean) {
-        AM(true),
-        PM(false)
+    private enum class Meridiem {
+        AM,
+        PM
     }
 
     companion object {
@@ -45,14 +45,12 @@ class NaverWeatherParser {
         document = Jsoup.parse(response)
     }
 
+    private fun getNowDateHeader(): Elements = document.select(QUERY_HEADER)
 
-    private fun getNowDateHeader(): Elements =
-        document.select(QUERY_HEADER)
-
-    fun getWeatherRows(): Elements =
-        document.select(QUERY_ROWS)
+    fun getWeatherRows(): Elements = document.select(QUERY_ROWS)
 
     fun getNoWDate(): String {
+
         return getNowDateHeader()
             .let { el ->
                 val dateQuery = el.select(QUERY_HEADER_DATE)
@@ -68,10 +66,10 @@ class NaverWeatherParser {
         el: Element,
         meridiem: Meridiem
     ): Weather {
-        return if (meridiem.status) {
-            el.select(QUERY_ROWS_TD).first().let(::weatherParser)
-        } else {
-            el.select(QUERY_ROWS_TD).last().let(::weatherParser)
+
+        return when (meridiem) {
+            Meridiem.AM -> el.select(QUERY_ROWS_TD).first().let(::weatherParser)
+            Meridiem.PM -> el.select(QUERY_ROWS_TD).last().let(::weatherParser)
         }
 
     }
@@ -85,18 +83,11 @@ class NaverWeatherParser {
             )
         }
 
-    private fun weatherParser(el: Element) =
-        Weather(
-            iconUrl = el.select(QUERY_ROWS_P_IMG).attr(
-                QUERY_ROWS_SRC
-            ),
-            status = el.select(QUERY_ROWS_UL_UI).first().text(),
-            temperature = el.select(QUERY_ROWS_UL_UI).last().select(
-                QUERY_ROWS_TEMP
-            ).text(),
-            chanceOfRain = el.select(QUERY_ROWS_UL_UI).last().select(
-                QUERY_ROWS_RAIN
-            ).text()
-        )
+    private fun weatherParser(el: Element) = Weather(
+        iconUrl = el.select(QUERY_ROWS_P_IMG).attr(QUERY_ROWS_SRC),
+        status = el.select(QUERY_ROWS_UL_UI).first().text(),
+        temperature = el.select(QUERY_ROWS_UL_UI).last().select(QUERY_ROWS_TEMP).text(),
+        chanceOfRain = el.select(QUERY_ROWS_UL_UI).last().select(QUERY_ROWS_RAIN).text()
+    )
 
 }

@@ -2,10 +2,12 @@ package kr.co.alex.weathersample.adapter
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.viewholder_weather_region.view.*
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.viewholder_weather_region.*
 import kr.co.alex.weathersample.data.WeatherRecyclerType
 
-class WeatherRegionViewHolder(view: View): RecyclerView.ViewHolder(view) {
+class WeatherRegionViewHolder(override val containerView: View) :
+    RecyclerView.ViewHolder(containerView), LayoutContainer {
 
     fun bind(item: WeatherRecyclerType) {
 
@@ -13,7 +15,7 @@ class WeatherRegionViewHolder(view: View): RecyclerView.ViewHolder(view) {
             return
         }
 
-        itemView.region.text = item.data.replace(" ", "\n")
+        region.text = item.data.replace(" ", "\n")
 
     }
 }
