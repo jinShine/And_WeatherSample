@@ -2,6 +2,7 @@ package kr.co.alex.weathersample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -21,7 +22,6 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProviders.of(
             this,
-
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     return WeatherViewModel() as T
@@ -30,12 +30,22 @@ class MainActivity : AppCompatActivity() {
         ).get(WeatherViewModel::class.java)
 
 
-        viewModel.fetchRegionWeather { list ->
-            adapter?.let {
-                println(list)
-                it.updateAllItems(list)
+//        viewModel.fetchRegionWeather { list ->
+//            adapter?.let {
+//                println(list)
+//                it.updateAllItems(list)
+//            }
+//        }
+        viewModel.fetchRegionWeather()
+
+        viewModel.weatherLiveData.observe(this, Observer { list ->
+            list?.let {
+                adapter?.let {
+                    println("" + list)
+                    it.updateAllItems(list)
+                }
             }
-        }
+        })
 
     }
 
