@@ -1,12 +1,9 @@
 package kr.co.alex.weathersample
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import kr.co.alex.weathersample.data.NationalRegion
 import kr.co.alex.weathersample.data.WeatherRecyclerType
 import kr.co.alex.weathersample.repository.WeatherRepository
-import kr.co.alex.weathersample.repository.WeatherResponse
 
 
 class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
