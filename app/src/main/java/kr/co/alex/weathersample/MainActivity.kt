@@ -1,6 +1,7 @@
 package kr.co.alex.weathersample
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -10,9 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kr.co.alex.weathersample.adapter.WeatherAdapter
 import kr.co.alex.weathersample.api.WeatherAPI
-import kr.co.alex.weathersample.api.WeatherService
-import kr.co.alex.weathersample.repository.WeatherRepository
 import kr.co.alex.weathersample.repository.WeatherRepositoryImpl
+import kr.co.alex.weathersample.repository.WeatherResponse
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,29 +33,19 @@ class MainActivity : AppCompatActivity() {
             }
         ).get(WeatherViewModel::class.java)
 
-        viewModel.weatherCellData.observe(this, Observer { weatherList ->
-            weatherList?.let {
-                adapter?.let {
-                    it.updateAllItems(weatherList)
+
+        viewModel.weatherCellData.observe(this, Observer { response ->
+            when (response) {
+                is WeatherResponse.Success -> {
+                    adapter?.let {
+                        it.updateAllItems(viewModel.transform(response.data))
+                    }
+                }
+                is WeatherResponse.Failure -> {
+                    Toast.makeText(this, response.error.message, Toast.LENGTH_LONG)
                 }
             }
-
         })
-//        viewModel.fetchRegionWeather { list ->
-//            adapter?.let {
-//                println(list)
-//                it.updateAllItems(list)
-//            }
-//        }
-//        viewModel.fetchRegionWeather()
-//        viewModel.weatherLiveData.observe(this, Observer { list ->
-//            list?.let {
-//                adapter?.let {
-//                    println("" + list)
-//                    it.updateAllItems(list)
-//                }
-//            }
-//        })
 
     }
 

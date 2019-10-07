@@ -12,25 +12,27 @@ import retrofit2.Response
 
 interface WeatherRepository {
 
-    fun getWeatherData(): LiveData<List<NationalRegion>>
-
+    fun getWeatherData()
+    fun getWeatherLiveData(): LiveData<WeatherResponse>
 }
 
 class WeatherRepositoryImpl(private val api: WeatherService) : WeatherRepository {
 
-    private val weatherLiveData = MutableLiveData<List<NationalRegion>>()
+    private val weatherLiveData = MutableLiveData<WeatherResponse>()
 
-    //TODO: 옵저빙 변수 만들어서 넘겨보기
-    override fun getWeatherData(): LiveData<List<NationalRegion>> {
+    override fun getWeatherLiveData() = weatherLiveData
+
+    override fun getWeatherData() {
+
         api.getPage().enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                println(" : : $t")
+                weatherLiveData.postValue(WeatherResponse.Failure(t))
             }
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 response.body()?.let { body ->
                     val weatherData = NaverWeatherParser(body.string()).getData()
-                    weatherLiveData.postValue(weatherData)
+                    weatherLiveData.postValue(WeatherResponse.Success(weatherData))
                 }
             }
         })
