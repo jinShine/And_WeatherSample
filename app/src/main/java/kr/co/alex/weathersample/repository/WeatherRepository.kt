@@ -3,7 +3,6 @@ package kr.co.alex.weathersample.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kr.co.alex.weathersample.api.WeatherService
-import kr.co.alex.weathersample.data.NationalRegion
 import kr.co.alex.weathersample.parser.NaverWeatherParser
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -33,6 +32,7 @@ class WeatherRepositoryImpl(private val api: WeatherService) : WeatherRepository
                 response.body()?.let { body ->
                     val weatherData = NaverWeatherParser(body.string()).getData()
                     weatherLiveData.postValue(WeatherResponse.Success(weatherData))
+//                    weatherLiveData.postValue(WeatherResponse.Failure(Throwable("asdfasdf")))
                 }
             }
         })

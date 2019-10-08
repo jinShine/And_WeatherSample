@@ -12,11 +12,29 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kr.co.alex.weathersample.adapter.WeatherAdapter
 import kr.co.alex.weathersample.api.WeatherAPI
 import kr.co.alex.weathersample.repository.WeatherRepositoryImpl
-import kr.co.alex.weathersample.repository.WeatherResponse
 
 class MainActivity : AppCompatActivity() {
 
     private var adapter: WeatherAdapter? = null
+
+    @Suppress("UNCHECKED_CAST")
+    private val factory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+
+            return WeatherViewModel(WeatherRepositoryImpl(WeatherAPI.weatherService)) as T
+        }
+    }
+
+//    @Suppress("UNCHECKED_CAST")
+//    private val viewModel: WeatherViewModel by lazy {
+//        ViewModelProviders.of(
+//            this, factory
+//        ).get(WeatherViewModel::class.java)
+//    }
+
+    private val viewModel: WeatherViewModel by lazy {
+        ViewModelProviders.of(this, factory)[WeatherViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,29 +42,15 @@ class MainActivity : AppCompatActivity() {
 
         setupAdaptor()
 
-        val viewModel = ViewModelProviders.of(
-            this,
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return WeatherViewModel(WeatherRepositoryImpl(WeatherAPI.weatherService)) as T
-                }
-            }
-        ).get(WeatherViewModel::class.java)
-
-
         viewModel.weatherCellData.observe(this, Observer { response ->
-            when (response) {
-                is WeatherResponse.Success -> {
-                    adapter?.let {
-                        it.updateAllItems(viewModel.transform(response.data))
-                    }
-                }
-                is WeatherResponse.Failure -> {
-                    Toast.makeText(this, response.error.message, Toast.LENGTH_LONG)
-                }
-            }
+            adapter?.updateAllItems(response)
         })
 
+        viewModel.weatherErrorData.observe(this, Observer { errorMsg ->
+            errorMsg?.let {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     private fun setupAdaptor() {
@@ -56,4 +60,3 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
     }
 }
-
