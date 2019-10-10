@@ -56,6 +56,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupAdaptor() {
         val layoutManager = GridLayoutManager(this, WeatherAdapter.FULL_SPAN_SIZE)
         adapter = WeatherAdapter(layoutManager)
+        adapter?.onRetryClick = {
+            println("asdfasdfdfadfad")
+            viewModel.retryWeatherData()
+        }
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }

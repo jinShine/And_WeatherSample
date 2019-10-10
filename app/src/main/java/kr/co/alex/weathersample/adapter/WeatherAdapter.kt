@@ -1,9 +1,12 @@
 package kr.co.alex.weathersample.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.viewholder_retry.view.*
 import kr.co.alex.weathersample.R
 import kr.co.alex.weathersample.data.WeatherRecyclerType
 
@@ -19,6 +22,7 @@ class WeatherAdapter(layoutManager: GridLayoutManager) :
         const val VIEW_TYPE_HEADER = R.layout.viewholder_weather_header
         const val VIEW_TYPE_ITEM = R.layout.viewholder_weather
         const val VIEW_TYPE_REGION = R.layout.viewholder_weather_region
+        const val VIEW_TYPE_RETRY = R.layout.viewholder_retry
     }
 
     private val items = mutableListOf<WeatherRecyclerType>()
@@ -38,27 +42,31 @@ class WeatherAdapter(layoutManager: GridLayoutManager) :
             VIEW_TYPE_HEADER -> WeatherHeaderViewHolder(view)
             VIEW_TYPE_ITEM -> WeatherViewHolder(view)
             VIEW_TYPE_REGION -> WeatherRegionViewHolder(view)
+            VIEW_TYPE_RETRY -> WeatherRetryViewHolder(view)
             else -> throw RuntimeException("Invalid Type")
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-
-        return when (items[position]) {
-            is WeatherRecyclerType.Header -> VIEW_TYPE_HEADER
-            is WeatherRecyclerType.Item -> VIEW_TYPE_ITEM
-            is WeatherRecyclerType.Region -> VIEW_TYPE_REGION
-        }
+    override fun getItemViewType(position: Int) = when (items[position]) {
+        is WeatherRecyclerType.Header -> VIEW_TYPE_HEADER
+        is WeatherRecyclerType.Item -> VIEW_TYPE_ITEM
+        is WeatherRecyclerType.Region -> VIEW_TYPE_REGION
+        is WeatherRecyclerType.Retry -> VIEW_TYPE_RETRY
     }
 
-    override fun getItemCount(): Int {
-        return items.count()
-    }
+    override fun getItemCount() = items.count()
+
+    var onRetryClick: (() -> Unit)? = null
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WeatherViewHolder -> holder.bind(items[position])
             is WeatherRegionViewHolder -> holder.bind(items[position])
+            is WeatherRetryViewHolder -> {
+                holder.containerView.retryButton.setOnClickListener {
+                    onRetryClick?.invoke()
+                }
+            }
         }
     }
 
@@ -68,6 +76,5 @@ class WeatherAdapter(layoutManager: GridLayoutManager) :
 
         notifyDataSetChanged()
     }
-
 
 }

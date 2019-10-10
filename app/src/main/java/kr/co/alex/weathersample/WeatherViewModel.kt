@@ -24,6 +24,7 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
                 _weatherCellData.value = transform(response.data)
             }
             is WeatherResponse.Failure -> {
+                _weatherCellData.value = listOf(WeatherRecyclerType.Retry)
                 _weatherErrorData.value = response.error.message
             }
         }
@@ -33,6 +34,8 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
         weatherRepository.getWeatherData()
         weatherRepository.getWeatherLiveData().observeForever(weatherDataObserver)
     }
+
+    fun retryWeatherData() = weatherRepository.getWeatherData()
 
     private fun transform(items: List<NationalRegion>): List<WeatherRecyclerType> {
         val list = mutableListOf<WeatherRecyclerType>()
