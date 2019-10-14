@@ -13,7 +13,7 @@ import kr.co.alex.weathersample.adapter.WeatherAdapter
 import kr.co.alex.weathersample.api.WeatherAPI
 import kr.co.alex.weathersample.repository.WeatherRepositoryImpl
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), WeatherAdapter.CellEvents {
 
     private var adapter: WeatherAdapter? = null
 
@@ -24,13 +24,6 @@ class MainActivity : AppCompatActivity() {
             return WeatherViewModel(WeatherRepositoryImpl(WeatherAPI.weatherService)) as T
         }
     }
-
-//    @Suppress("UNCHECKED_CAST")
-//    private val viewModel: WeatherViewModel by lazy {
-//        ViewModelProviders.of(
-//            this, factory
-//        ).get(WeatherViewModel::class.java)
-//    }
 
     private val viewModel: WeatherViewModel by lazy {
         ViewModelProviders.of(this, factory)[WeatherViewModel::class.java]
@@ -55,12 +48,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupAdaptor() {
         val layoutManager = GridLayoutManager(this, WeatherAdapter.FULL_SPAN_SIZE)
-        adapter = WeatherAdapter(layoutManager)
-        adapter?.onRetryClick = {
-            println("asdfasdfdfadfad")
-            viewModel.retryWeatherData()
-        }
+        adapter = WeatherAdapter(layoutManager, this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+    }
+
+    override fun onRetryClicked() {
+        viewModel.retryWeatherData()
     }
 }

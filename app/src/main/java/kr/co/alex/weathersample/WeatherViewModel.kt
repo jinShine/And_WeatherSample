@@ -37,17 +37,17 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
 
     fun retryWeatherData() = weatherRepository.getWeatherData()
 
-    private fun transform(items: List<NationalRegion>): List<WeatherRecyclerType> {
-        val list = mutableListOf<WeatherRecyclerType>()
+    private fun transform(items: List<NationalRegion>) = mutableListOf<WeatherRecyclerType>()
+        .apply {
+            add(WeatherRecyclerType.Header)
 
-        items.forEach {
-            list.add(WeatherRecyclerType.Region(it.regionName))
-            list.add(WeatherRecyclerType.Item(it.morningWeather))
-            list.add(WeatherRecyclerType.Item(it.afternoonWeather))
+            items.forEach {
+//                it.regionName.let(WeatherRecyclerType::Region).let(this::add)
+                add(WeatherRecyclerType.Region(it.regionName))
+                add(WeatherRecyclerType.Item(it.morningWeather))
+                add(WeatherRecyclerType.Item(it.afternoonWeather))
+            }
         }
-
-        return list
-    }
 
     override fun onCleared() {
         weatherRepository.getWeatherLiveData().removeObserver(weatherDataObserver)

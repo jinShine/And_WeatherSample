@@ -1,17 +1,14 @@
 package kr.co.alex.weathersample.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.viewholder_retry.view.*
 import kr.co.alex.weathersample.R
 import kr.co.alex.weathersample.data.WeatherRecyclerType
 
 
-class WeatherAdapter(layoutManager: GridLayoutManager) :
+class WeatherAdapter(layoutManager: GridLayoutManager, private val events: CellEvents) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -42,7 +39,7 @@ class WeatherAdapter(layoutManager: GridLayoutManager) :
             VIEW_TYPE_HEADER -> WeatherHeaderViewHolder(view)
             VIEW_TYPE_ITEM -> WeatherViewHolder(view)
             VIEW_TYPE_REGION -> WeatherRegionViewHolder(view)
-            VIEW_TYPE_RETRY -> WeatherRetryViewHolder(view)
+            VIEW_TYPE_RETRY -> WeatherRetryViewHolder(view, events)
             else -> throw RuntimeException("Invalid Type")
         }
     }
@@ -56,17 +53,11 @@ class WeatherAdapter(layoutManager: GridLayoutManager) :
 
     override fun getItemCount() = items.count()
 
-    var onRetryClick: (() -> Unit)? = null
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WeatherViewHolder -> holder.bind(items[position])
             is WeatherRegionViewHolder -> holder.bind(items[position])
-            is WeatherRetryViewHolder -> {
-                holder.containerView.retryButton.setOnClickListener {
-                    onRetryClick?.invoke()
-                }
-            }
+            is WeatherRetryViewHolder -> holder.bind()
         }
     }
 
@@ -75,6 +66,10 @@ class WeatherAdapter(layoutManager: GridLayoutManager) :
         this.items.addAll(items)
 
         notifyDataSetChanged()
+    }
+
+    interface CellEvents {
+        fun onRetryClicked()
     }
 
 }

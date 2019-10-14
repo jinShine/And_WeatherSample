@@ -31,8 +31,8 @@ class WeatherRepositoryImpl(private val api: WeatherService) : WeatherRepository
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 response.body()?.let { body ->
                     val weatherData = NaverWeatherParser(body.string()).getData()
-//                    weatherLiveData.postValue(WeatherResponse.Success(weatherData))
-                    weatherLiveData.postValue(WeatherResponse.Failure(Throwable("asdfasdf")))
+                    weatherLiveData.postValue(WeatherResponse.Success(weatherData))
+//                    weatherLiveData.postValue(WeatherResponse.Failure(Throwable("asdfasdf")))
                 }
             }
         })
