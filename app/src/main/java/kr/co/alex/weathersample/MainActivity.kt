@@ -44,6 +44,14 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.CellEvents {
                 Toast.makeText(this, it, Toast.LENGTH_LONG).show()
             }
         })
+
+        viewModel.swipeResult.observe(this, Observer {
+            swipeRefresh.isRefreshing = it
+        })
+
+        swipeRefresh.setOnRefreshListener {
+            viewModel.getWeatherData()
+        }
     }
 
     private fun setupAdaptor() {
@@ -54,6 +62,6 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.CellEvents {
     }
 
     override fun onRetryClicked() {
-        viewModel.retryWeatherData()
+        viewModel.getWeatherData()
     }
 }
