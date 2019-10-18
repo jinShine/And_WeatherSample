@@ -37,11 +37,12 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
     }
 
     init {
-        getWeatherData()
+        loadWeatherData()
         weatherRepository.getWeatherLiveData().observeForever(weatherDataObserver)
     }
 
-    fun getWeatherData() {
+    fun loadWeatherData(resId: Int = R.string.weather_loading) {
+        _weatherCellData.value = listOf(WeatherRecyclerType.Loading(resId))
         _swipeResult.value = true
         thread {
             Thread.sleep(1000L)
@@ -54,7 +55,6 @@ class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewM
             add(WeatherRecyclerType.Header)
 
             items.forEach {
-                //                it.regionName.let(WeatherRecyclerType::Region).let(this::add)
                 add(WeatherRecyclerType.Region(it.regionName))
                 add(WeatherRecyclerType.Item(it.morningWeather))
                 add(WeatherRecyclerType.Item(it.afternoonWeather))

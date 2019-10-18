@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.CellEvents {
         })
 
         swipeRefresh.setOnRefreshListener {
-            viewModel.getWeatherData()
+            viewModel.loadWeatherData()
         }
     }
 
@@ -62,6 +62,6 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.CellEvents {
     }
 
     override fun onRetryClicked() {
-        viewModel.getWeatherData()
+        viewModel.loadWeatherData(R.string.weather_loading_retry)
     }
 }

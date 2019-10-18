@@ -15,4 +15,6 @@ sealed class WeatherRecyclerType(val spanSize: Int) {
 
     object Retry : WeatherRecyclerType(FULL_SPAN_SIZE)
 
+    data class Loading(val data: Int) : WeatherRecyclerType(FULL_SPAN_SIZE)
+
 }
