@@ -2,18 +2,18 @@ package kr.co.alex.weathersample
 
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kr.co.alex.weathersample.adapter.WeatherAdapter
 import kr.co.alex.weathersample.api.WeatherAPI
 import kr.co.alex.weathersample.repository.WeatherRepositoryImpl
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), WeatherAdapter.CellEvents {
+class MainActivity : DaggerAppCompatActivity(), WeatherAdapter.CellEvents {
 
     private var adapter: WeatherAdapter? = null
 
@@ -25,9 +25,12 @@ class MainActivity : AppCompatActivity(), WeatherAdapter.CellEvents {
         }
     }
 
-    private val viewModel: WeatherViewModel by lazy {
-        ViewModelProviders.of(this, factory)[WeatherViewModel::class.java]
-    }
+    @Inject
+    lateinit var viewModel: WeatherViewModel
+
+//    private val viewModel: WeatherViewModel by lazy {
+//        ViewModelProviders.of(this, factory)[WeatherViewModel::class.java]
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
