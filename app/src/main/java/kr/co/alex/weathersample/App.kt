@@ -7,20 +7,17 @@ import dagger.android.HasAndroidInjector
 import kr.co.alex.weathersample.di.DaggerAppComponent
 import javax.inject.Inject
 
-
-
-
 class App : Application(), HasAndroidInjector {
 
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
+
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
+
 
     override fun onCreate() {
         super.onCreate()
 
-        DaggerAppComponent.builder().build()
+        DaggerAppComponent.builder().build().inject(this)
     }
-
-    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
-
 }

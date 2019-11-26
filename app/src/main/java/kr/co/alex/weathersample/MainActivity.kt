@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,17 +27,19 @@ class MainActivity : DaggerAppCompatActivity(), WeatherAdapter.CellEvents {
     }
 
     @Inject
-    lateinit var viewModel: WeatherViewModel
+    lateinit var test: String
 
-//    private val viewModel: WeatherViewModel by lazy {
-//        ViewModelProviders.of(this, factory)[WeatherViewModel::class.java]
-//    }
+    private val viewModel: WeatherViewModel by lazy {
+        ViewModelProviders.of(this, factory)[WeatherViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setupAdaptor()
+
+        println(" ${test}")
 
         viewModel.weatherCellData.observe(this, Observer { response ->
             adapter?.updateAllItems(response)
