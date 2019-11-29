@@ -3,35 +3,49 @@ package kr.co.alex.weathersample
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kr.co.alex.weathersample.adapter.WeatherAdapter
-import kr.co.alex.weathersample.api.WeatherAPI
-import kr.co.alex.weathersample.repository.WeatherRepositoryImpl
 import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity(), WeatherAdapter.CellEvents {
 
     private var adapter: WeatherAdapter? = null
 
-    @Suppress("UNCHECKED_CAST")
-    private val factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+//    @Suppress("UNCHECKED_CAST")
+//    private val factory = object : ViewModelProvider.Factory {
+//        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+//            return WeatherViewModel(WeatherRepositoryImpl(WeatherAPI.weatherService)) as T
+//        }
+//    }
 
-            return WeatherViewModel(WeatherRepositoryImpl(WeatherAPI.weatherService)) as T
-        }
-    }
+//    @Inject
+//    @Named("testMessage")
+//    lateinit var testValue: String
 
     @Inject
-    lateinit var test: String
+    lateinit var dummyValue: String
+
+
+//    @Inject
+//    lateinit var viewModel: WeatherViewModel
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
 
     private val viewModel: WeatherViewModel by lazy {
         ViewModelProviders.of(this, factory)[WeatherViewModel::class.java]
     }
+
+//    @Inject
+//    @Named("WeatherViewModel")
+//    lateinit var viewModel: WeatherViewModel
+
+//    private val viewModel: WeatherViewModel by lazy {
+//        ViewModelProviders.of(this, factory)[WeatherViewModel::class.java]
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +53,8 @@ class MainActivity : DaggerAppCompatActivity(), WeatherAdapter.CellEvents {
 
         setupAdaptor()
 
-        println(" ${test}")
+//        println(" ${testValue}")
+        println(" ${dummyValue}")
 
         viewModel.weatherCellData.observe(this, Observer { response ->
             adapter?.updateAllItems(response)

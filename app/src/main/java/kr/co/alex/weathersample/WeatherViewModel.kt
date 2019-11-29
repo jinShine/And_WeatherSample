@@ -8,10 +8,11 @@ import kr.co.alex.weathersample.data.NationalRegion
 import kr.co.alex.weathersample.data.WeatherRecyclerType
 import kr.co.alex.weathersample.repository.WeatherRepository
 import kr.co.alex.weathersample.repository.WeatherResponse
+import javax.inject.Inject
 import kotlin.concurrent.thread
 
 
-class WeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
+class WeatherViewModel @Inject constructor(private val weatherRepository: WeatherRepository) : ViewModel() {
 
     private var _weatherCellData = MutableLiveData<List<WeatherRecyclerType>>()
     val weatherCellData: LiveData<List<WeatherRecyclerType>> = _weatherCellData

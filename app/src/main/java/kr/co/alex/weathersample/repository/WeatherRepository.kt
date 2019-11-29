@@ -8,6 +8,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
 interface WeatherRepository {
 
@@ -15,7 +16,7 @@ interface WeatherRepository {
     fun getWeatherLiveData(): LiveData<WeatherResponse>
 }
 
-class WeatherRepositoryImpl(private val api: WeatherService) : WeatherRepository {
+class WeatherRepositoryImpl @Inject constructor(private val api: WeatherService) : WeatherRepository {
 
     private val weatherLiveData = MutableLiveData<WeatherResponse>()
 
